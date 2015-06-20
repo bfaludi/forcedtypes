@@ -91,11 +91,10 @@ You can use this script ...
 
 You can create a new type based on additional attribute.
 
-	>>> ft = t.new(t.Float, locale='en_us')
+	>>> ft = t.new(t.Float, locale='en_US')
 	>>> ft('3,4')
 	34.0
 	>>> ft('3.4')
 	3.4
 	>>> ft('3,400.43')
 	3400.43
-	>>> ft(3,4)
