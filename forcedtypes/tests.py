@@ -1,10 +1,36 @@
 
 # -*- coding: utf-8 -*-
 
+"""
+Force crappy data into python type.
+Copyright (C) 2015, Bence Faludi (bence@ozmo.hu)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, <see http://www.gnu.org/licenses/>.
+"""
+
 import unittest
 import forcedtypes as t
 from datetime import date, datetime
 
+class TestNewFunction(unittest.TestCase):
+    def test_parameter(self):
+        self.assertEqual( t.new(t.Float, locale = 'hu')('4,1232'), 4.1232 )
+        self.assertEqual( t.new(t.Float, locale = 'en_US')('4,1232'), 41232 )
+        
+    def test_without_parameter(self):
+        self.assertEqual( t.new(t.Float)('4,1232'), 4.1232 )
+        
 class TestFloat(unittest.TestCase):
     def test_bool(self):
         self.assertEqual(t.Float(True), 1.0)

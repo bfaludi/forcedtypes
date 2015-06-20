@@ -1,6 +1,24 @@
 
 # -*- coding: utf-8 -*-
 
+"""
+Force crappy data into python type.
+Copyright (C) 2015, Bence Faludi (bence@ozmo.hu)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, <see http://www.gnu.org/licenses/>.
+"""
+
 import re
 import sys
 import types
@@ -21,6 +39,18 @@ else:
     string_types = basestring,
     
 remove_space = re.compile(u' ')
+
+class TypeConstructor(object):
+    def __init__(self, type, *args, **kwargs):
+        self.type = type
+        self.args = args
+        self.kwargs = kwargs
+        
+    def __call__(self, value):
+        return self.type(value, *self.args, **self.kwargs)
+
+def new(type, *args, **kwargs):
+    return TypeConstructor(type, *args, **kwargs)
 
 class Type(object):
     

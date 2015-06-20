@@ -86,3 +86,16 @@ You can use this script ...
 	3 55.6 'Item 2.\n'
 	4 44.5 None
 	6 77.5 'Item 4.'
+	
+##### 6. Type conversion based on rule
+
+You can create a new type based on additional attribute.
+
+	>>> ft = t.new(t.Float, locale='en_us')
+	>>> ft('3,4')
+	34.0
+	>>> ft('3.4')
+	3.4
+	>>> ft('3,400.43')
+	3400.43
+	>>> ft(3,4)
