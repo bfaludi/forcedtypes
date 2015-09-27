@@ -1,6 +1,6 @@
-# forcedtypes
+# forcedtypes [![Build Status](https://travis-ci.org/bfaludi/forcedtypes.svg)](https://travis-ci.org/bfaludi/forcedtypes)
 
-Force crappy data into Python type. Yeah, I know It sounds strange but It could be useful sometimes. Ohh, did I mention that It is working with Py2 and Py3.
+Force crappy data into Python type. Yeah, I know It sounds strange but It could be useful sometimes. Ohh, did I mention that It is working with Python **2.7** & **3.3+**.
 
 Supported types:
 
