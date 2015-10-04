@@ -165,10 +165,10 @@ class Date(Type, date):
         if rvalue:
             return rvalue.date()
 
-class Str(Type, str):
+class Str(Type, unicode):
     @classmethod
     def get_converted_value(cls, value):
-        return str.__new__(cls, value)
+        return unicode.__new__(cls, value)
 
 class Bool(Type):
     TRUE_VALUES = ( 't', 'true', 'yes', 'y', )
