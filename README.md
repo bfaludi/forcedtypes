@@ -1,4 +1,9 @@
-# forcedtypes [![Build Status](https://travis-ci.org/bfaludi/forcedtypes.svg)](https://travis-ci.org/bfaludi/forcedtypes)
+# forcedtypes 
+
+[![Build Status](https://travis-ci.org/bfaludi/forcedtypes.svg)](https://travis-ci.org/bfaludi/forcedtypes)
+![Downloads](https://img.shields.io/pypi/dm/forcedtypes.svg)
+![Version](https://img.shields.io/pypi/v/forcedtypes.svg)
+![License](https://img.shields.io/pypi/l/forcedtypes.svg)
 
 Force crappy data into Python type. Yeah, I know It sounds strange but It could be useful sometimes. Ohh, did I mention that It is working with Python **2.7** & **3.3+**.
 
