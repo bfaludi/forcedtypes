@@ -37,7 +37,9 @@ if PY3:
 
 else:
     string_types = basestring,
-    
+    unicode = unicode
+    long = long
+
 remove_space = re.compile(u' ')
 
 class TypeConstructor(object):
@@ -45,7 +47,7 @@ class TypeConstructor(object):
         self.type = type
         self.args = args
         self.kwargs = kwargs
-        
+
     def __call__(self, value):
         return self.type(value, *self.args, **self.kwargs)
 
@@ -53,34 +55,34 @@ def new(type, *args, **kwargs):
     return TypeConstructor(type, *args, **kwargs)
 
 class Type(object):
-    
+
     __metaclass__ = ABCMeta
-    
+
     def __new__(cls, value, *args, **kwargs):
         if cls.is_empty(value):
             return None
-        
+
         if cls.is_non_convertable(value):
             return value
-        
+
         return cls.get_converted_value(value, *args, **kwargs)
-    
+
     @classmethod
     def is_empty(cls, value):
         return value is None or len(unicode(value).strip()) == 0
-    
+
     @classmethod
     def is_non_convertable(cls, value):
         return isinstance(value, cls.__base__)
-    
+
     @classmethod
     def _try(cls, func, args, kwargs = None):
         try:
             return func(*args, **(kwargs or {}))
-            
+
         except:
             return None
-            
+
     @classmethod
     def coalesce(cls, tests):
         for test in tests:
@@ -89,13 +91,13 @@ class Type(object):
             else:
                 func, args = test
                 kwargs = None
-            
+
             rvalue = cls._try(func, args, kwargs)
             if rvalue is not None:
                 return rvalue
-                
+
         return None
-    
+
     @classmethod
     @abstractmethod
     def get_converted_value(cls, value):
@@ -105,59 +107,59 @@ class Float(Type, float):
     @classmethod
     def get_converted_value(cls, value, locale = None):
         if locale:
-            rvalue = cls._try( 
-                parse_decimal, 
+            rvalue = cls._try(
+                parse_decimal,
                 (remove_space.sub( u'', unicode(value) ), locale,)
             )
             return float(rvalue) if rvalue else None
-        
+
         return cls.coalesce([
-            ( float.__new__, (cls, value, ) ),
-            ( float.__new__, (cls, re.sub(u',', u'.', remove_space.sub(u'', unicode(value))), ) ),
+            ( float, (value, ) ),
+            ( float, (re.sub(u',', u'.', remove_space.sub(u'', unicode(value))), ) ),
         ])
 
 class Int(Type, long):
     @classmethod
     def get_converted_value(cls, value, locale = None):
         return cls.coalesce([
-            ( long.__new__, (cls, value,) ),
-            ( long.__new__, (cls, Float(value),) ),
+            ( long, (value,) ),
+            ( long, (Float(value),) ),
         ])
-    
+
 class Datetime(Type, datetime):
     @classmethod
     def is_non_convertable(cls, value):
         return value.__class__ is datetime
-        
+
     @classmethod
     def get_converted_value(cls, value, *args, **kwargs):
         if isinstance(value, (tuple, list)):
             return cls._try( datetime, value )
-        
+
         if value.__class__ is date:
             return datetime(value.year, value.month, value.day)
-        
+
         if not isinstance(value, string_types):
             return None
-        
+
         return cls._try( parse_datetime, (value,), kwargs )
-                
+
 class Date(Type, date):
     @classmethod
     def is_non_convertable(cls, value):
         return value.__class__ is date
-    
+
     @classmethod
     def get_converted_value(cls, value, *args, **kwargs):
         if isinstance(value, (tuple, list)):
             return cls._try( date, value )
-        
+
         if value.__class__ is datetime:
             return value.date()
-        
+
         if not isinstance(value, string_types):
             return None
-        
+
         rvalue = cls.coalesce([
              ( parse_datetime, (value,), kwargs ),
              ( parse_datetime, (value.split(u' ')[0],), kwargs ),
@@ -168,29 +170,28 @@ class Date(Type, date):
 class Str(Type, unicode):
     @classmethod
     def get_converted_value(cls, value):
-        return unicode.__new__(cls, value)
+        return unicode(value)
 
 class Bool(Type):
     TRUE_VALUES = ( 't', 'true', 'yes', 'y', )
     FALSE_VALUES = ( 'f', 'false', 'no', 'n', )
-    
+
     @classmethod
     def is_empty(cls, value):
-        return False 
-    
+        return False
+
     @classmethod
     def get_converted_value(cls, value):
         if value is None:
             return value
-        
+
         if isinstance(value, string_types) and value.lower().strip() in cls.TRUE_VALUES:
             return True
-        
+
         elif isinstance(value, string_types) and value.lower().strip() in cls.FALSE_VALUES:
             return False
-        
+
         elif isinstance(value, string_types) and value.replace(u'.',u'',1).isdigit():
             return bool(Float(value))
-        
+
         return bool(value)
-        
